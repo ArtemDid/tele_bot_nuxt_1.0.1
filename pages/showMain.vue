@@ -29,6 +29,7 @@ export default {
     },
   },
 
+
   methods: {
       hasUserOne1() {
         this.mas = this.$store.getters.mass_list.rows;
