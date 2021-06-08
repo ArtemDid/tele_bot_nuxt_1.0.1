@@ -1,7 +1,7 @@
 
 export default async function ({ store, redirect }) {
 
-    store.dispatch("massList", redirect)
+    store.dispatch("nuxtClientInit")
 
 }
 

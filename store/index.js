@@ -2,7 +2,7 @@ const Swal = require('sweetalert2')
 
 export const state = () => ({
     user: {},
-    mass_list: {}
+    mass_list: []
 })
 
 export const mutations = {
@@ -89,7 +89,9 @@ export const actions = {
             });
 
     },
-    async massList({ commit }, redirect) {
+
+    async nuxtClientInit({ commit }) {
+        console.log(process.browser ? localStorage.token : "eee")
         fetch(`http://localhost:3001/`, {
             method: 'POST',
             headers: {
@@ -103,14 +105,43 @@ export const actions = {
             })
             .then(data => {
                 console.log(data);
-                
+                console.log(process.client ? localStorage.token : "");
                 if (data.success) {
                     console.log('good')
-                    commit('setMass', data);
+                    commit('setMass', data.rows);
                 }
                 else {
                     console.log('error')
                     redirect('/?message=login')
+                }
+
+            })
+            .catch(err => {
+                console.log("Not Found");
+            });
+
+    },
+    async massListAsync({ commit }) {
+        fetch(`http://localhost:3001/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': process.browser ? localStorage.token : ""
+            },
+            body: JSON.stringify({email: '', password: ''}),
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                
+                if (data.success) {
+                    console.log('good')
+                    commit('setMass', data.rows);
+                }
+                else {
+                    console.log('error')
                 }
 
             })
