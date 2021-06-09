@@ -2,7 +2,11 @@ const Swal = require('sweetalert2')
 
 export const state = () => ({
     user: {},
-    mass_list: []
+    mass_list: [],
+    rates: [],
+    ratesToday: [],
+    users: [],
+    check: true
 })
 
 export const mutations = {
@@ -11,7 +15,23 @@ export const mutations = {
     },
     setMass(state, mass_list) {
         state.mass_list = mass_list;
+    },
+    setRates(state, rates) {
+        state.rates = rates;
+    },
+    setRatesToday(state, ratesToday) {
+        state.ratesToday = ratesToday;
+    },
+    setUsers(state, users) {
+        state.users = users;
+    },
+    showUserCheckFalse(state){
+        state.check = true;
+    },
+    showUserCheck(state){
+        state.check = false;
     }
+
 }
 
 export const actions = {
@@ -90,8 +110,8 @@ export const actions = {
 
     },
 
-    async nuxtClientInit({ commit }) {
-        console.log(process.browser ? localStorage.token : "eee")
+    async nuxtClientInit({ commit }, context) {
+        // console.log(process.browser ? localStorage.token : "eee")
         fetch(`http://localhost:3001/`, {
             method: 'POST',
             headers: {
@@ -105,14 +125,16 @@ export const actions = {
             })
             .then(data => {
                 console.log(data);
-                console.log(process.client ? localStorage.token : "");
+                // console.log(process.client ? localStorage.token : "");
                 if (data.success) {
                     console.log('good')
                     commit('setMass', data.rows);
                 }
                 else {
                     console.log('error')
-                    redirect('/?message=login')
+                    let {redirect} = context;
+                    redirect(307,'/?message=login')
+                    console.log('error2',context)
                 }
 
             })
@@ -121,39 +143,90 @@ export const actions = {
             });
 
     },
-    async massListAsync({ commit }) {
-        fetch(`http://localhost:3001/`, {
+
+    async show_rates({ commit }, rate) {
+        fetch(`http://localhost:3001/rates`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-access-token': process.browser ? localStorage.token : ""
             },
-            body: JSON.stringify({email: '', password: ''}),
+            body: JSON.stringify({rate}),
         })
             .then(response => {
                 return response.json();
             })
             .then(data => {
                 console.log(data);
-                
+
                 if (data.success) {
-                    console.log('good')
-                    commit('setMass', data.rows);
-                }
-                else {
-                    console.log('error')
+                    commit('setRates', data.mas);
                 }
 
             })
             .catch(err => {
+                alert(err);
+                console.log("Not Found");
+            });
+    },
+
+    async ratesToday({ commit }) {
+        fetch(`http://localhost:3001/rates/today`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                data.itemUSD.shift()
+                if (data.success) {
+                    commit('setRatesToday', data.itemUSD);
+                }
+
+            })
+            .catch(err => {
+                alert(err);
+                console.log("Not Found");
+            });
+    },
+    showUserCheckFalse({commit}){
+        commit('showUserCheckFalse');
+    },
+    showUserCheck({commit}){
+        commit('showUserCheck');
+        fetch(`http://localhost:3001/users`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    commit('setUsers', data.response.rows);
+                }
+
+            })
+            .catch(err => {
+                alert(err);
                 console.log("Not Found");
             });
 
     }
+
 }
 
 export const getters = {
     user: s => s.user,
     mass_list: s => s.mass_list,
-
+    rates: s => s.rates,
+    ratesToday: s => s.ratesToday,
+    users: s => s.users,
+    check: s=>s.check,
 }

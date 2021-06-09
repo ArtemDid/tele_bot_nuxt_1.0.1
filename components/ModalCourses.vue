@@ -1,13 +1,11 @@
 <template>
   <section>
-    <b-button @click="$bvModal.show('modal-scoped')">Open Modal</b-button>
+    <b-button @click="$bvModal.show('modal-scoped')">Monitoring of courses</b-button>
 
     <b-modal id="modal-scoped">
       <template>
-        <p>Monitoring of courses</p>
-
         <div>
-          <h1>Chart Demo</h1>
+          <h1>Monitoring of courses</h1>
 
           <div>
             <ChartLine />
@@ -16,7 +14,7 @@
       </template>
 
       <template #modal-footer="{ cancel }">
-        <b-dropdown text="Currency" block>
+        <b-dropdown :text="title" block>
           <b-dropdown-item
             v-for="item of currency"
             :key="item"
@@ -66,25 +64,21 @@ export default {
         "USD",
         "UZS",
       ],
-      date: "USD",
+      rate: "Currency",
     };
   },
-  //   computed: {
-  //     gerCur: {
-  //       get: function () {
-  //         return this.date;
-  //       },
-  //       set: function (newValue) {
-  //           console.log('cur', this.date)
-  //         this.date = newValue;
-  //       },
-  //     },
-  //   }
+    computed: {
+      title(){
+      return this.rate;
+    }
+    },
   methods: {
     gerCur($event) {
-      this.date = $event.target.outerText;
-      console.log("cur", this.date);
+      this.rate = $event.target.outerText;
+      console.log("cur", this.rate);
+      this.$store.dispatch("show_rates", this.rate);
     },
+    
   },
 };
 </script>

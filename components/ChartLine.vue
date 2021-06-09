@@ -89,20 +89,7 @@
           :update="watchers"
           @chartLoaded="chartLoaded"
         />
-        <div>
-          <b-input-group class="mt-3">
-            <b-form-input
-              v-for="index in points.length"
-              :key="index"
-              v-model.number="points[index-1]"
-              class="centered"
-              type="number"
-              @focus="watchers = ['options.series']"
-              @blur="watchers = undefined"
-            />
-          </b-input-group>
-          <label>^^------------ Modify the series data (reactively) ------------^^</label>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -115,14 +102,14 @@ export default {
       caption: 'Chart caption here',
       title: 'Basic Chart',
       subtitle: 'More details here',
-      points: [10, 0, 8, 2, 6, 4, 5, 5],
+      points2: [],
       seriesColor: '',
       animationDuration: 1000,
       chartType: '',
       colorInputIsSupported: null,
       chartTypes: [],
       durations: [0, 500, 1000, 2000],
-      seriesName: 'My Data',
+      seriesName: 'Sale Rate',
       yAxis: 'My Values',
       watchers: undefined,
       colors: [
@@ -148,6 +135,14 @@ export default {
       return (offset = 0) => '#' 
       + ((parseInt(`0x${this.seriesColor.split('#')[1]}`) ^ 0xffffff) + offset)
         .toString(16)
+    },
+    points() {
+      this.points2 = []
+      this.$store.getters.rates.map(item=>{
+        this.points2.push(item.saleRate)
+      })
+      console.log('ppp',this.points2)
+      return this.points2;
     },
     chartOptions() {
       const ctx = this
@@ -267,4 +262,7 @@ input[type="color"]::-webkit-color-swatch-wrapper {
   width: 30px;
   height: 30px;
 }
+/* .chartElem{
+  width: 500px;
+} */
 </style>
