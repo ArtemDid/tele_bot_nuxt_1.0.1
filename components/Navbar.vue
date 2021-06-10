@@ -18,7 +18,7 @@
         <nuxt-link
           variant="dark"
           active-class="active"
-          to="/showUsers"
+          to="/showUsers2"
           @click.native="checkBtnTrue"
         >
           Show Users

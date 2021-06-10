@@ -56,12 +56,13 @@ export default {
   },
 
   router: {
-    routes: [
-      {
-        name: 'registration2',
-        path: '/registration',
-        component: 'pages/registration2.vue'
-      },
-    ]
+    extendRoutes(routes, resolve) {
+      routes.push({
+        name: 'showUsers',
+        path: '/showUsers2',
+        component: resolve(__dirname, 'pages/showUsers.vue')
+      })
+
+    }
   }
 }
