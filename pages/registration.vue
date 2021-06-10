@@ -1,9 +1,6 @@
 <template>
   <div class="container">
-    <div v-if="$route.query.message" class="alert alert-danger mb-3">
-      Need login first
-    </div>
-    <h1>Sign in</h1>
+    <h1>Sign up</h1>
     <b-form @submit="onSubmit" @reset="onReset">
       <label for="email">Email address:</label>
       <b-form-input
@@ -35,14 +32,6 @@
       <b-button class="submit" type="submit" variant="primary">Submit</b-button>
       <b-button class="submit" type="reset" variant="danger">Reset</b-button>
       
-      <div class="d-flex flex-row bd-highlight">
-        <div class="bd-highlight">Or &nbsp;</div>
-        <div class="bd-highlight">
-          <nuxt-link active-class="active" to="/registration">
-            register now!
-          </nuxt-link>
-        </div>
-      </div>
     </b-form>
   </div>
 </template>
@@ -85,7 +74,7 @@ export default {
       event.preventDefault();
       if(!this.form.email) this.form.email = this.getEmail;
 
-      this.$store.dispatch("fetch_auth", this.form);
+      this.$store.dispatch("fetch_registr", this.form);
     },
     onReset(event) {
       event.preventDefault();
