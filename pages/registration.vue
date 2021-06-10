@@ -29,8 +29,8 @@
         Looks Good.
       </b-form-valid-feedback>
 
-      <b-button type="submit" variant="primary">Submit</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
+      <b-button class="submit" type="submit" variant="primary">Submit</b-button>
+      <b-button class="submit" type="reset" variant="danger">Reset</b-button>
       
     </b-form>
   </div>
@@ -88,5 +88,8 @@ export default {
 <style scoped>
 .container {
   max-width: 500px;
+}
+.submit{
+  margin-top: 5px;
 }
 </style>

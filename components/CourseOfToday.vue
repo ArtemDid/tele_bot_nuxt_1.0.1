@@ -1,7 +1,7 @@
 <template>
   <section>
-    <b-button @click="showModal">Course for Today</b-button>
-
+    <button type="button" class="btn btn-dark" @click="showModal">Course for Today</button>
+<!-- <a class="btn btn-dark" href="#" role="button">Link</a> -->
     <b-modal id="modal-scoped-course">
       <template>
         <div>

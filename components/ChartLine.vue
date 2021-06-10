@@ -251,9 +251,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style >
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
+}
+.modal-content{
+    background-color: rgb(200, 231, 221);
+
 }
  #colorPicker {
   border: 0;
@@ -262,7 +266,5 @@ input[type="color"]::-webkit-color-swatch-wrapper {
   width: 30px;
   height: 30px;
 }
-/* .chartElem{
-  width: 500px;
-} */
+
 </style>

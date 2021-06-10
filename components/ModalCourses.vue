@@ -1,6 +1,6 @@
 <template>
   <section>
-    <b-button @click="$bvModal.show('modal-scoped')">Monitoring of courses</b-button>
+    <button class="btn btn-dark" @click="$bvModal.show('modal-scoped')">Monitoring of courses</button>
 
     <b-modal id="modal-scoped">
       <template>
@@ -84,6 +84,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .grid {
   display: grid;
   gap: 2rem;
