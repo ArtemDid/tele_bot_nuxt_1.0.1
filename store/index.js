@@ -2,7 +2,7 @@ const Swal = require('sweetalert2')
 
 export const state = () => ({
     user: {},
-    mass_list: [],
+    history: { rows: [], count: 0 },
     rates: [],
     ratesToday: [],
     users: [],
@@ -13,8 +13,12 @@ export const mutations = {
     setUser(state, user) {
         state.user = user;
     },
-    setMass(state, mass_list) {
-        state.mass_list = mass_list;
+    setHistory(state, history) {
+        state.history.rows = history.rows;
+        state.history.count = history.count[0].count;
+    },
+    setPartHistory(state, rows) {
+        state.history.rows = rows;
     },
     setRates(state, rates) {
         state.rates = rates;
@@ -25,10 +29,10 @@ export const mutations = {
     setUsers(state, users) {
         state.users = users;
     },
-    showUserCheckFalse(state){
+    showUserCheckFalse(state) {
         state.check = true;
     },
-    showUserCheck(state){
+    showUserCheck(state) {
         state.check = false;
     }
 
@@ -36,197 +40,221 @@ export const mutations = {
 
 export const actions = {
     async fetch_auth({ commit }, form) {
-        fetch(`http://localhost:3001/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(form),
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-
-                if (data.success) {
-
-                    if (localStorage !== undefined) {
-                        localStorage.login = form.email;
-                        localStorage.password = form.password;
-                        localStorage.token = data.token;
-                        console.log(localStorage)
-
-                    }
-                    this.$router.push('/showMain')
-
-                }
-
-                commit('setUser', data);
-            })
-            .catch(err => {
-                alert(err);
-                console.log("Not Found");
+        try {
+            const response = await fetch(`http://localhost:3001/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(form),
             });
+            const data = await response.json();
+
+            console.log(data);
+            commit('setUser', data);
+
+            if (!data.success) {
+                console.log('[error]: ', data)
+                return;
+            }
+
+            if (localStorage === undefined) return;
+
+            localStorage.login = form.email;
+            localStorage.password = form.password;
+            localStorage.token = data.token;
+            console.log(localStorage)
+            this.$router.push('/showMain')
+            return;
+        } catch (err) {
+            alert(err);
+            console.log("Not Found");
+        }
     },
     async fetch_registr({ commit }, form) {
-        fetch(`http://localhost:3001/create`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(form),
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-
-                if (data.success) {
-
-                    if (localStorage !== undefined) {
-                        localStorage.login = form.email;
-                        localStorage.password = form.password;
-                        localStorage.token = data.token;                        
-                    }
-                    this.$router.push('/')
-
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Your work has been saved',
-                        showConfirmButton: false,
-                        timer: 1500
-                      })
-                }
-
-                commit('setUser', data);
-            })
-            .catch(err => {
-                alert(err);
-                console.log("Not Found");
+        try {
+            const response = await fetch(`http://localhost:3001/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(form),
             });
+            const data = await response.json();
+
+            console.log(data);
+            commit('setUser', data);
+
+            if (!data.success) {
+                console.log('[error]: ', data)
+                return;
+            }
+
+            if (localStorage === undefined) return;
+
+            localStorage.login = form.email;
+            localStorage.password = form.password;
+            localStorage.token = data.token;
+            console.log(localStorage)
+
+            this.$router.push('/')
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            return;
+        } catch (err) {
+            alert(err);
+            console.log("Not Found");
+        }
 
     },
 
     async nuxtClientInit({ commit }, context) {
-        // console.log(process.browser ? localStorage.token : "eee")
-        fetch(`http://localhost:3001/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': localStorage.token
-            },
-            body: JSON.stringify({email: '', password: ''}),
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                // console.log(process.client ? localStorage.token : "");
-                if (data.success) {
-                    console.log('good')
-                    commit('setMass', data.rows);
-                }
-                else {
-                    console.log('error')
-                    let {redirect} = context;
-                    redirect(307,'/?message=login')
-                    console.log('error2',context)
-                }
-
-            })
-            .catch(err => {
-                console.log("Not Found");
+        try {
+            const response = await fetch(`http://localhost:3001/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': localStorage.token
+                },
+                body: JSON.stringify({ email: '', password: '' }),
             });
+            const data = await response.json();
 
+            console.log(data);
+            commit('setUser', data);
+
+            if (!data.success) {
+                console.log('[error]: ', data)
+                let { redirect } = context;
+                redirect(307, '/?message=login')
+                return;
+            }
+
+            console.log('good')
+            commit('setHistory', data);
+            return;
+        } catch (err) {
+            alert(err);
+            console.log("Not Found");
+        }
+
+    },
+
+    async showPartHistory({ commit }, send) {
+        try {
+            const response = await fetch(`http://localhost:3001/part/history`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(send),
+            });
+            const data = await response.json();
+
+            console.log(data);
+            if (!data.success) {
+                console.log('[error]: ', data)
+                return;
+            }
+
+            commit('setPartHistory', data.rows);
+            return;
+        } catch (err) {
+            alert(err);
+            console.log("Not Found");
+        }
     },
 
     async show_rates({ commit }, rate) {
-        fetch(`http://localhost:3001/rates`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({rate}),
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-
-                if (data.success) {
-                    commit('setRates', data.mas);
-                }
-
-            })
-            .catch(err => {
-                alert(err);
-                console.log("Not Found");
+        try {
+            const response = await fetch(`http://localhost:3001/rates`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rate }),
             });
+            const data = await response.json();
+
+            console.log(data);
+            if (!data.success) {
+                console.log('[error]: ', data)
+                return;
+            }
+
+            commit('setRates', data.mas);
+            return;
+        } catch (err) {
+            alert(err);
+            console.log("Not Found");
+        }
     },
 
     async ratesToday({ commit }) {
-        fetch(`http://localhost:3001/rates/today`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                data.itemUSD.shift()
-                if (data.success) {
-                    commit('setRatesToday', data.itemUSD);
-                }
-
-            })
-            .catch(err => {
-                alert(err);
-                console.log("Not Found");
+        try {
+            const response = await fetch(`http://localhost:3001/rates/today`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
+            const data = await response.json();
+
+            console.log(data);
+            if (!data.success) {
+                console.log('[error]: ', data)
+                return;
+            }
+            data.itemUSD.shift()
+
+            commit('setRatesToday', data.itemUSD);
+            return;
+        } catch (err) {
+            alert(err);
+            console.log("Not Found");
+        }
     },
-    showUserCheckFalse({commit}){
+    showUserCheckFalse({ commit }) {
         commit('showUserCheckFalse');
     },
-    showUserCheck({commit}){
-        commit('showUserCheck');
-        fetch(`http://localhost:3001/users`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-                if (data.success) {
-                    commit('setUsers', data.response.rows);
-                }
+    async showUserCheck({ commit }) {
+        try {
+            commit('showUserCheck');
 
-            })
-            .catch(err => {
-                alert(err);
-                console.log("Not Found");
+            const response = await fetch(`http://localhost:3001/users`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
+            const data = await response.json();
 
+            console.log(data);
+            if (!data.success) {
+                console.log('[error]: ', data)
+                return;
+            }
+
+            commit('setUsers', data.response.rows);
+            return;
+        } catch (err) {
+            alert(err);
+            console.log("Not Found");
+        }
     }
 
 }
 
 export const getters = {
     user: s => s.user,
-    mass_list: s => s.mass_list,
+    history: s => s.history,
     rates: s => s.rates,
     ratesToday: s => s.ratesToday,
     users: s => s.users,
-    check: s=>s.check,
+    check: s => s.check,
 }

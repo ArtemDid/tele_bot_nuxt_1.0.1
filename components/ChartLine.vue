@@ -1,7 +1,7 @@
 <template>
   <div class="chartElem">
     <div class="row">
-      <div class="col-3-auto col-md-3">
+      <div class="col-12">
         <div id="chartType">
           <label>Chart Type</label>
           <b-form-select
@@ -65,7 +65,7 @@
           />
         </div>
       </div>
-      <div class="col-9-auto col-md-9">
+      <div class="col-12">
         <label>Set the chart title (reactively)</label>
         <input
           v-model="title"
@@ -228,7 +228,6 @@ export default {
   },
   methods: {
     chartLoaded(chart) {
-      // eslint-disable-next-line no-console
       console.log('Chart Loaded! ')
       console.log('If you need to interact with the API directly, here you go!', chart)
       console.log('Helpul tip: away from the docs? chart.__proto__ in dev tools will show you the methods:', chart.__proto__)  

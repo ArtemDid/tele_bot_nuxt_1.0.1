@@ -32,8 +32,8 @@
         Looks Good.
       </b-form-valid-feedback>
 
-      <b-button class="submit" type="submit" variant="primary">Submit</b-button>
-      <b-button class="submit" type="reset" variant="danger">Reset</b-button>
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="reset" class="btn btn-danger" >Reset</button>
       
       <div class="d-flex flex-row bd-highlight">
         <div class="bd-highlight">Or &nbsp;</div>
@@ -92,6 +92,7 @@ export default {
       this.form.email = "";
       this.form.password = "";
     },
+    
   },
 };
 </script>
@@ -102,5 +103,8 @@ export default {
 }
 .submit{
   margin-top: 5px;
+}
+button{
+  color: white;
 }
 </style>

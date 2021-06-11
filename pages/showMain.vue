@@ -2,7 +2,6 @@
   <section>
     <b-table
       :items="count"
-      :current-page="currentPage"
       :fields="fields"
       :per-page="perPage"
       :filter="filter"
@@ -11,7 +10,6 @@
       :sort-desc.sync="sortDesc"
       :sort-direction="sortDirection"
       stacked="md"
-      @filtered="onFiltered"
     >
       <template #cell(count)="row" id="col">
         {{ row.name }}
@@ -26,6 +24,7 @@
           align="fill"
           size="sm"
           class="my-0"
+          @change="getClick"
         ></b-pagination>
       </b-col>
     </b-row>
@@ -37,11 +36,12 @@ section {
   margin: 0 auto;
   max-width: 70%;
 }
-table td div, thead th div {
+table td div,
+thead th div {
   text-align: center;
 }
 
-thead th{
+thead th {
   width: 20%;
 }
 
@@ -50,7 +50,7 @@ body {
   min-height: 100vh;
 }
 
-.page-link{
+.page-link {
   background-color: rgb(240, 245, 244);
 }
 </style>
@@ -60,12 +60,13 @@ body {
 export default {
   data() {
     return {
-      currentPage: 1,
       perPage: 5,
+      currentPage: 1,
       filter: null,
       filterOn: [],
       sortBy: "",
       sortDesc: false,
+      number: 0,
       sortDirection: "asc",
       fields: [
         { key: "id", sortable: true },
@@ -76,92 +77,26 @@ export default {
   },
   middleware: ["list"],
 
-
   computed: {
     count() {
-      return this.$store.getters.mass_list;
+      console.log(this.$store.getters.history.rows);
+      return this.$store.getters.history.rows;
     },
     totalRows() {
-      return this.$store.getters.mass_list.length;
+      console.log(this.$store.getters.history.count);
+      return this.$store.getters.history.count;
     },
   },
 
   methods: {
-    // info(item, index, button) {
-    //   this.infoModal.title = `Row index: ${index}`
-    //   this.infoModal.content = JSON.stringify(item, null, 2)
-    //   this.$root.$emit('bv::show::modal', this.infoModal.id, button)
-    // },
-    // resetInfoModal() {
-    //   this.infoModal.title = ''
-    //   this.infoModal.content = ''
-    // },
-    onFiltered(filteredItems) {
-      this.totalRows = filteredItems.length;
-      this.currentPage = 1;
+    getClick($event) {
+      console.log("ooo", $event);
+
+      this.$store.dispatch("showPartHistory", {
+        LIMIT: this.perPage,
+        OFFSET: --$event * this.perPage,
+      });
     },
   },
-  // async asyncData({ store }) {
-  //   console.log("iii", store.getters.mass_list);
-  //   if (store.getters.mass_list.length === 0) {
-  //     console.log("iii2");
-  //     this.hasUserOne();
-  //     console.log("iii3", store.getters.mass_list.length);
-  //     const count = store.getters.mass_list;
-  //     return count;
-  //   }
-  // },
-
-  // asyncData(context) {
-  //   // Universal keys
-  //   const {
-  //     store,
-  //   } = context;
-
-  //   // Client-side
-  //   if (process.server) {
-  //     console.log("iii2", store.getters.mass_list);
-  //     store.dispatch('massListAsync')
-  //     return store.getters.mass_list;
-
-  //   }
-
-  // },
-
-  // data() {
-  //   return {
-  //     count: [],
-  //   };
-  // },
-
-  //   async fetch() {
-  //     fetch(`http://localhost:3001/`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "x-access-token": process.browser ? localStorage.token : "",
-  //       },
-  //       body: JSON.stringify({ email: "", password: "" }),
-  //     })
-  //       .then((response) => {
-  //         return response.json();
-  //       })
-  //       .then((data) => {
-  //         console.log(data);
-  //         console.log("iii2");
-  //         console.log(localStorage.token);
-
-  //         if (data.success) {
-  //           console.log("good");
-  //           this.count = data.row;
-  //         } else {
-  //           console.log("error");
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         console.log("Not Found");
-  //       });
-  //   },
-  // fetchOnServer: false,
 };
 </script>

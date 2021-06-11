@@ -64,5 +64,11 @@ export default {
       })
 
     }
-  }
+  },
+  ssr: false,
+  loadingIndicator: {
+    name: 'circle',
+    color: '#3B8070',
+    background: 'white'
+  },
 }

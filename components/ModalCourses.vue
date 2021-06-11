@@ -14,7 +14,7 @@
       </template>
 
       <template #modal-footer="{ cancel }">
-        <b-dropdown :text="title" block>
+        <b-dropdown :text="title" block class="btn-secondary">
           <b-dropdown-item
             v-for="item of currency"
             :key="item"
@@ -23,7 +23,7 @@
             >{{ item }}</b-dropdown-item
           >
         </b-dropdown>
-        <b-button variant="danger" @click="cancel()"> Cancel </b-button>
+        <button class="btn btn-danger" @click="cancel()"> Cancel </button>
       </template>
     </b-modal>
   </section>
@@ -88,7 +88,6 @@ export default {
 .grid {
   display: grid;
   gap: 2rem;
-
   @media (min-width: 768px) {
     grid-template-columns: 1fr 1fr;
   }

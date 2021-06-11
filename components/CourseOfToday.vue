@@ -1,7 +1,8 @@
 <template>
   <section>
-    <button type="button" class="btn btn-dark" @click="showModal">Course for Today</button>
-<!-- <a class="btn btn-dark" href="#" role="button">Link</a> -->
+    <button type="button" class="btn btn-dark" @click="showModal">
+      Course for Today
+    </button>
     <b-modal id="modal-scoped-course">
       <template>
         <div>
@@ -42,8 +43,8 @@
       </template>
 
       <template #modal-footer="{ cancel, ok }">
-        <b-button variant="danger" @click="cancel()"> Cancel </b-button>
-        <b-button variant="success" @click="ok()"> OK</b-button>
+        <button class="btn btn-danger" @click="cancel()">Cancel</button>
+        <button class="btn btn-success" @click="ok()">OK</button>
       </template>
     </b-modal>
   </section>
@@ -72,7 +73,7 @@ export default {
     count() {
       return this.$store.getters.ratesToday;
     },
-        totalRows() {
+    totalRows() {
       return this.$store.getters.ratesToday.length;
     },
   },
@@ -82,7 +83,7 @@ export default {
       this._bv__modal.show("modal-scoped-course");
       this.$store.dispatch("ratesToday");
     },
-     onFiltered(filteredItems) {
+    onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
